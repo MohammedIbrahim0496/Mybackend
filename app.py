@@ -5,6 +5,7 @@ import joblib
 from typing import List
 from email.message import EmailMessage
 import smtplib
+import os
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -48,14 +49,13 @@ def email(data: List[str] = Body(...)):
     try:
         msg=EmailMessage()
         coninfo=f"Name :{data[0]} \nEmail :{data[1]} \nMessage :{data[2]}"
-        print(f"1{coninfo}")
         msg["Subject"]=f"New Contact Submission From {data[0]}"
         msg["From"]="n.ibrahim.04092006@gmail.com"
         msg["To"]="n.mohammedibrahim19472006@gmail.com"
         msg.set_content(coninfo)
         try:
             with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
-                server.login("n.ibrahim.04092006@gmail.com","uxlpbejwlswofocw")
+                server.login(os.environ["EMAIL_USER"],os.environ["EMAIL_PASSWORD"])
                 server.send_message(msg)
                 return {"email":int(0)}
         except Exception as e:
