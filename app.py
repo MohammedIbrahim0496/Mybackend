@@ -59,7 +59,8 @@ def email(data: List[str] = Body(...)):
                 server.send_message(msg)
                 return {"email":int(0)}
         except Exception as e:
-            return {"email":int(1)}     
+            strr=f"1{e}"
+            return {"email":str(strr)}     
     except Exception as e:
         raise HTTPException(status_code=500,detail=str(e))          
     """try:
