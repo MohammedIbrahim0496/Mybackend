@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import numpy as np
 import joblib
 from typing import List
-
+from email.message import EmailMessage
+import smtplib
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -42,3 +43,43 @@ def carpredict(data: List[float] = Body(...)):
         return {"prediction": float(prediction[0])}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+@app.post("/email")
+def email(data: List[str] = Body(...)):
+    try:
+        msg=EmailMessage()
+        coninfo=f"Name :{data[0]} \nEmail :{data[1]} \nMessage :{data[2]}"
+        print(f"1{coninfo}")
+        msg["Subject"]=f"New Contact Submission From {data[0]}"
+        msg["From"]="n.ibrahim.04092006@gmail.com"
+        msg["To"]="n.mohammedibrahim19472006@gmail.com"
+        msg.set_content(coninfo)
+        try:
+            with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
+                server.login("n.ibrahim.04092006@gmail.com","uxlpbejwlswofocw")
+                server.send_message(msg)
+                return {"email":int(0)}
+        except Exception as e:
+            return {"email":int(1)}     
+    except Exception as e:
+        raise HTTPException(status_code=500,detail=str(e))          
+    """try:
+        msg=EmailMessage()
+        coninfo=f"Name :{sname.value} \nEmail :{semail.value} \nMessage :{smass.value}"
+        msg["Subject"]=f"New Contact Submission From {sname.value}"
+        msg["From"]="n.ibrahim.04092006@gmail.com"
+        msg["To"]="n.mohammedibrahim19472006@gmail.com"
+        msg.set_content(coninfo)
+        with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
+            server.login("n.ibrahim.04092006@gmail.com","uxlpbejwlswofocw")
+            server.send_message(msg)   
+        #status_text.value ="Email Sent Succesfully!!"
+        #status_text.color="green"
+        #await asyncio.sleep(5)   
+        #status_text.value =""
+        #status_text.color=ft.Colors.TRANSPARENT
+    except:
+        #status_text.value ="Failed To Send Email !!"
+        #status_text.color="red"
+        #await asyncio.sleep(5)   
+        #status_text.value =""
+        #status_text.color=ft.Colors.TRANSPARENT """  
