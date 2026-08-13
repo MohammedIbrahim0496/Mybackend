@@ -50,8 +50,8 @@ def email(data: List[str] = Body(...)):
         msg=EmailMessage()
         coninfo=f"Name :{data[0]} \nEmail :{data[1]} \nMessage :{data[2]}"
         msg["Subject"]=f"New Contact Submission From {data[0]}"
-        msg["From"]="n.ibrahim.04092006@gmail.com"
-        msg["To"]="n.mohammedibrahim19472006@gmail.com"
+        msg["From"]="EMAIL_USER"
+        msg["To"]="EMAIL_TO"
         msg.set_content(coninfo)
         try:
             with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
