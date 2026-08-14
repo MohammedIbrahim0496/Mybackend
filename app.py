@@ -63,5 +63,6 @@ def email(data: List[str] = Body(...)):
     #except Exception as e:
      #   return {"email":int(1)}
     except Exception as e:
-        return {"email":int(1)}
+        str(e)
+        return {"email":str(e)}
         raise HTTPException(status_code=500,detail=str(e))
