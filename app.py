@@ -55,6 +55,8 @@ def email(data: List[str] = Body(...)):
         print(bool(email_password),flush=True)
         email_to = os.getenv("EMAIL_TO")
         print(bool(email_to),flush=True)
+        sport=os.getenv("M_PORT")
+        sserver=os.getenv("M_SERVER")
         msg=EmailMessage()
         coninfo=f"Name :\n{data[0]} \nEmail :\n{data[1]} \nMessage :\n{data[2]}"
         msg["Subject"]=f"New Contact Submission From {data[0]}"
@@ -63,8 +65,7 @@ def email(data: List[str] = Body(...)):
         msg["To"]=email_to
         msg.set_content(coninfo)
         print("Message Created",flush=True)
-        print(email_user,email_password,email_to,flush=True)
-        with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
+        with smtplib.SMTP_SSL(sserver,int(sport)) as server:
             print("Connecting",flush=True)
             server.login(email_user, email_password)
             print("Logged In",bool(email_user),flush=True)
