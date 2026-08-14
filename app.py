@@ -6,6 +6,7 @@ from typing import List
 from email.message import EmailMessage
 import smtplib
 import os
+from pydantic import BaseModel,EmailStr
 from dotenv import load_dotenv
 load_dotenv()
 app = FastAPI()
@@ -50,22 +51,16 @@ def carpredict(data: List[float] = Body(...)):
 def email(data: List[str] = Body(...)):
     try:
         email_user = os.getenv("EMAIL_USER")
-        print(bool(email_user),flush=True)
         email_password = os.getenv("EMAIL_PASSWORD")
-        print(bool(email_password),flush=True)
         email_to = os.getenv("EMAIL_TO")
-        print(bool(email_to),flush=True)
-        sport=os.getenv("M_PORT")
-        sserver=os.getenv("M_SERVER")
         msg=EmailMessage()
         coninfo=f"Name :\n{data[0]} \nEmail :\n{data[1]} \nMessage :\n{data[2]}"
         msg["Subject"]=f"New Contact Submission From {data[0]}"
         msg["From"]=email_user
-        print(bool(email_user),flush=True)
         msg["To"]=email_to
         msg.set_content(coninfo)
         print("Message Created",flush=True)
-        with smtplib.SMTP_SSL(sserver,int(sport),timeout=10.0) as server:
+        with smtplib.SMTP_SSL("smtp.gmail.com",465,timeout=10.0) as server:
             print("Connecting",flush=True)
             server.login(email_user, email_password)
             print("Logged In",bool(email_user),flush=True)
