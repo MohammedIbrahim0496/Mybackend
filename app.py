@@ -50,17 +50,19 @@ def carpredict(data: List[float] = Body(...)):
 def email(data: List[str] = Body(...)):
     try:
         email_user = os.getenv("EMAIL_USER")
+        email_password = os.getenv("EMAIL_PASSWORD")
+        email_to = os.getenv("EMAIL_TO")
         msg=EmailMessage()
         coninfo=f"Name :\n{data[0]} \nEmail :\n{data[1]} \nMessage :\n{data[2]}"
         msg["Subject"]=f"New Contact Submission From {data[0]}"
-        msg["From"]=os.getenv("EMAIL_USER")
+        msg["From"]=email_user
         print(bool(email_user),flush=True)
-        msg["To"]=os.getenv("EMAIL_TO")
+        msg["To"]=email_to
         msg.set_content(coninfo)
         with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
             print("Connecting",flush=True)
-            server.login(os.getenv("EMAIL_USER"),os.getenv("EMAIL_PASSWORD"))
-            print("Logged In",bool(os.getenv("EMAIL_USER")),flush=True)
+            server.login(email_user, email_password)
+            print("Logged In",bool(email_user),flush=True)
             re=server.send_message(msg)
             print(re,flush=True)
             return {"email":int(0)}
