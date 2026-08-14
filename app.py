@@ -49,11 +49,12 @@ def carpredict(data: List[float] = Body(...)):
 @app.post("/email")
 def email(data: List[str] = Body(...)):
     try:
+        email_user = os.getenv("EMAIL_USER")
         msg=EmailMessage()
         coninfo=f"Name :\n{data[0]} \nEmail :\n{data[1]} \nMessage :\n{data[2]}"
         msg["Subject"]=f"New Contact Submission From {data[0]}"
         msg["From"]=os.getenv("EMAIL_USER")
-        print(bool(msg["From"]),flush=True)
+        print(bool(email_user),flush=True)
         msg["To"]=os.getenv("EMAIL_TO")
         msg.set_content(coninfo)
         with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
