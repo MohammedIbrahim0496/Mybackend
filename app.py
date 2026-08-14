@@ -63,6 +63,7 @@ def email(data: List[str] = Body(...)):
         msg["To"]=email_to
         msg.set_content(coninfo)
         print("Message Created",flush=True)
+        print(email_user,email_password,email_to,flush=True)
         with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
             print("Connecting",flush=True)
             server.login(email_user, email_password)
