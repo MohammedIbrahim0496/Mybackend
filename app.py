@@ -57,6 +57,7 @@ def email(data: List[str] = Body(...)):
         msg["To"]=os.getenv("EMAIL_TO")
         msg.set_content(coninfo)
         with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
+            print("Connecting",flush=True)
             server.login(os.getenv("EMAIL_USER"),os.getenv("EMAIL_PASSWORD"))
             print("Logged In",bool(os.getenv("EMAIL_USER")),flush=True)
             re=server.send_message(msg)
