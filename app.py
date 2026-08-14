@@ -55,14 +55,13 @@ def email(data: List[str] = Body(...)):
         msg["From"]=os.getenv("EMAIL_USER")
         msg["To"]=os.getenv("EMAIL_TO")
         msg.set_content(coninfo)
-        try:
-            with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
-                server.login(os.getenv("EMAIL_USER"),os.getenv("EMAIL_PASSWORD"))
-                re=server.send_message(msg)
-                print(re,flush=True)
-                return {"email":int(0)}
-        except Exception as e:
-            return {"email":int(1)}
+        with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
+            server.login(os.getenv("EMAIL_USER"),os.getenv("EMAIL_PASSWORD"))
+            re=server.send_message(msg)
+            print(re,flush=True)
+            return {"email":int(0)}
+    #except Exception as e:
+     #   return {"email":int(1)}
     except Exception as e:
         return {"email":int(1)}
         raise HTTPException(status_code=500,detail=str(e))
