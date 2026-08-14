@@ -65,7 +65,7 @@ def email(data: List[str] = Body(...)):
         msg["To"]=email_to
         msg.set_content(coninfo)
         print("Message Created",flush=True)
-        with smtplib.SMTP_SSL(sserver,int(sport)) as server:
+        with smtplib.SMTP_SSL(sserver,int(sport),timeout=10.0) as server:
             print("Connecting",flush=True)
             server.login(email_user, email_password)
             print("Logged In",bool(email_user),flush=True)
