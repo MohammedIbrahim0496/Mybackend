@@ -53,10 +53,12 @@ def email(data: List[str] = Body(...)):
         coninfo=f"Name :\n{data[0]} \nEmail :\n{data[1]} \nMessage :\n{data[2]}"
         msg["Subject"]=f"New Contact Submission From {data[0]}"
         msg["From"]=os.getenv("EMAIL_USER")
+        print(bool(msg["From"]),flush=True)
         msg["To"]=os.getenv("EMAIL_TO")
         msg.set_content(coninfo)
         with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
             server.login(os.getenv("EMAIL_USER"),os.getenv("EMAIL_PASSWORD"))
+            print("Logged In",bool(os.getenv("EMAIL_USER")),flush=True)
             re=server.send_message(msg)
             print(re,flush=True)
             return {"email":int(0)}
