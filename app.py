@@ -6,6 +6,8 @@ from typing import List
 from email.message import EmailMessage
 import smtplib
 import os
+from dotenv import load_dotenv
+load_dotenv()
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -48,39 +50,19 @@ def carpredict(data: List[float] = Body(...)):
 def email(data: List[str] = Body(...)):
     try:
         msg=EmailMessage()
-        coninfo=f"Name :{data[0]} \nEmail :{data[1]} \nMessage :{data[2]}"
+        coninfo=f"Name :\n{data[0]} \nEmail :\n{data[1]} \nMessage :\n{data[2]}"
         msg["Subject"]=f"New Contact Submission From {data[0]}"
-        msg["From"]="EMAIL_USER"
-        msg["To"]="EMAIL_TO"
+        msg["From"]=os.getenv("EMAIL_USER")
+        msg["To"]=os.getenv("EMAIL_TO")
         msg.set_content(coninfo)
         try:
             with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
-                server.login(os.environ["EMAIL_USER"],os.environ["EMAIL_PASSWORD"])
-                server.send_message(msg)
+                server.login(os.getenv("EMAIL_USER"),os.getenv("EMAIL_PASSWORD"))
+                re=server.send_message(msg)
+                print(re,flush=True)
                 return {"email":int(0)}
         except Exception as e:
-            strr=f"1{e}"
-            return {"email":str(strr)}     
+            return {"email":int(1)}
     except Exception as e:
-        raise HTTPException(status_code=500,detail=str(e))          
-    """try:
-        msg=EmailMessage()
-        coninfo=f"Name :{sname.value} \nEmail :{semail.value} \nMessage :{smass.value}"
-        msg["Subject"]=f"New Contact Submission From {sname.value}"
-        msg["From"]="n.ibrahim.04092006@gmail.com"
-        msg["To"]="n.mohammedibrahim19472006@gmail.com"
-        msg.set_content(coninfo)
-        with smtplib.SMTP_SSL("smtp.gmail.com",465) as server:
-            server.login("n.ibrahim.04092006@gmail.com","uxlpbejwlswofocw")
-            server.send_message(msg)   
-        #status_text.value ="Email Sent Succesfully!!"
-        #status_text.color="green"
-        #await asyncio.sleep(5)   
-        #status_text.value =""
-        #status_text.color=ft.Colors.TRANSPARENT
-    except:
-        #status_text.value ="Failed To Send Email !!"
-        #status_text.color="red"
-        #await asyncio.sleep(5)   
-        #status_text.value =""
-        #status_text.color=ft.Colors.TRANSPARENT """  
+        return {"email":int(1)}
+        raise HTTPException(status_code=500,detail=str(e))
