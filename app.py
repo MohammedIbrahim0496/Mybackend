@@ -3,8 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import numpy as np
 import joblib
 from typing import List
-from email.message import EmailMessage
-import smtplib
+import resend
 import os
 from pydantic import BaseModel,EmailStr
 from dotenv import load_dotenv
@@ -50,23 +49,19 @@ def carpredict(data: List[float] = Body(...)):
 @app.post("/email")
 def email(data: List[str] = Body(...)):
     try:
-        email_user = os.getenv("EMAIL_USER")
-        email_password = os.getenv("EMAIL_PASSWORD")
+        resend.api_key = os.getenv("RESEND_API_KEY")
         email_to = os.getenv("EMAIL_TO")
-        msg=EmailMessage()
         coninfo=f"Name :\n{data[0]} \nEmail :\n{data[1]} \nMessage :\n{data[2]}"
-        msg["Subject"]=f"New Contact Submission From {data[0]}"
-        msg["From"]=email_user
-        msg["To"]=email_to
-        msg.set_content(coninfo)
-        print("Message Created",flush=True)
-        with smtplib.SMTP_SSL("smtp.gmail.com",587,timeout=10.0) as server:
-            print("Connecting",flush=True)
-            server.login(email_user, email_password)
-            print("Logged In",bool(email_user),flush=True)
-            re=server.send_message(msg)
-            print(re,flush=True)
-            return {"email":int(0)}
+        print("SCreating Message",flush=True)
+        params = {
+            "from": "onboarding@resend.dev",
+            "to": email_to,
+            "subject": f"New Contact Submission From {data[0]}",
+            "text": coninfo
+        }
+        response = resend.Emails.send(params)
+        print("sent successfully",response,flush=True)
+        return {"email":int(0)}
     #except Exception as e:
      #   return {"email":int(1)}
     except Exception as e:
