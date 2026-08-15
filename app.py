@@ -70,7 +70,8 @@ def email(data: List[str] = Body(...)):
         return {"email":str(e)}
         raise HTTPException(status_code=500,detail=str(e))
 @app.post("/spam")
-def spam(data: List[str] = Body(...)):
+def spam(data: str = Body(...)):
+    print(data)
     try:
         class SpamLSTM(nn.Module): 
             def __init__( 
@@ -150,7 +151,8 @@ def spam(data: List[str] = Body(...)):
                 output = model(tensor)
                 probability = torch.sigmoid(output).item() 
                 return (round(probability,4))
-        a=predict_email(data[0])  
+        print(data)    
+        a=predict_email(data)  
         return {"prediction": float(a)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
