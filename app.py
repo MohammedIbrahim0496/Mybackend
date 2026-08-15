@@ -70,7 +70,7 @@ def email(data: List[str] = Body(...)):
         return {"email":str(e)}
         raise HTTPException(status_code=500,detail=str(e))
 @app.post("/spam")
-def spam(data:str = Body(...)):
+def spam(data: List[str] = Body(...)):
     try:
         class SpamLSTM(nn.Module): 
             def __init__( 
