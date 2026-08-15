@@ -150,7 +150,7 @@ def spam(data: List[str] = Body(...)):
                 output = model(tensor)
                 probability = torch.sigmoid(output).item() 
                 return (round(probability,4))
-        a=predict_email(data)  
+        a=predict_email(data[0])  
         return {"prediction": float(a)}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
